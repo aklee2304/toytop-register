@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Регистрация исполнителя | ТойТоп</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      input, select, textarea, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background-color: #24a0ed;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Регистрация исполнителя</h2>
+    <form id="form">
+      <input type="text" placeholder="Ваше имя" name="name" required />
+      <input type="text" placeholder="Ваш Telegram username (без @)" name="username" required />
+      <select name="category" required>
+        <option value="">Выберите категорию</option>
+        <option value="Ведущий">Ведущий</option>
+        <option value="Фотограф">Фотограф</option>
+        <option value="Видеограф">Видеограф</option>
+        <option value="Оформитель">Оформитель</option>
+        <option value="Кейтеринг">Кейтеринг</option>
+        <option value="Ресторан">Ресторан</option>
+        <option value="Музыкальная группа">Музыкальная группа</option>
+      </select>
+      <input type="text" placeholder="Город" name="city" required />
+      <textarea placeholder="Кратко о себе" name="about" required></textarea>
+      <input type="text" placeholder="Цена за услугу" name="price" required />
+      <button type="submit">Отправить</button>
+    </form>
+
+    <script>
+      const tg = window.Telegram.WebApp;
+      tg.expand();
+
+      const form = document.getElementById("form");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const formData = Object.fromEntries(new FormData(form).entries());
+
+        const telegramId = tg?.initDataUnsafe?.user?.id || "";
+        if (!telegramId) {
+          alert("Не удалось получить Telegram ID. Открой форму через бота.");
+          return;
+        }
+
+        const data = {
+          telegram_id: telegramId,
+          name: formData.name,
+          username: formData.username,
+          category: formData.category,
+          city: formData.city,
+          about: formData.about,
+          price: formData.price
+        };
+
+        fetch("https://script.google.com/macros/s/AKfycbwa4kfBDpnm4puzENaUrcZhqbcPy7QBR-c98dm_c1e5gcEzhekkTGlPukNzeyXAovkB/exec", {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify({ contents: data }),
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          }
+        })
+        .then(() => {
+          alert("Анкета отправлена!");
+          tg.close();
+        })
+        .catch((err) => {
+          alert("Ошибка при отправке.");
+          console.error(err);
+        });
+      });
+    </script>
+  </body>
+</html>
