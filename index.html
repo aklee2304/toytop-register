@@ -4,12 +4,11 @@
 
   const form = document.getElementById("form");
 
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const formData = Object.fromEntries(new FormData(form).entries());
 
-    // Telegram ID
     const telegramId = tg?.initDataUnsafe?.user?.id || "";
     if (!telegramId) {
       alert("Не удалось получить Telegram ID. Открой форму через бота.");
@@ -26,7 +25,6 @@
       price: formData.price
     };
 
-    // 🔄 Отправка данных через no-cors
     fetch("https://script.google.com/macros/s/AKfycbwa4kfBDpnm4puzENaUrcZhqbcPy7QBR-c98dm_c1e5gcEzhekkTGlPukNzeyXAovkB/exec", {
       method: "POST",
       mode: "no-cors",
